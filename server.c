@@ -73,6 +73,7 @@ void main()
                 {
                     printf("Disconnected from %d \n",ntohs(new_address.sin_port));
                     fflush(stdout);
+                    close(new_socket);
                     exit(EXIT_SUCCESS);
                 }
                 printf("Client %d sent : %s\n",ntohs(new_address.sin_port),buffer);

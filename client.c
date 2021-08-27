@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<unistd.h>
 #include<stdlib.h>
 #include<string.h>
 #include<sys/socket.h>
@@ -42,6 +43,7 @@ void main()
         {
             printf("Adios!\n");
             fflush(stdout);
+            close(client_socket);
             exit(EXIT_SUCCESS);
         }
         if(recv(client_socket,buffer,1024,0)<0)
