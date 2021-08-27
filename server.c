@@ -77,6 +77,8 @@ void main()
                     exit(EXIT_SUCCESS);
                 }
                 printf("Client %d sent : %s\n",ntohs(new_address.sin_port),buffer);
+                system("ps -e -o pid,comm,%cpu,%mem --sort=-%cpu | head -n 10 >myfile");
+                
                 fflush(stdout);
                 strcpy(buffer,"Received your msg");
                 send(new_socket,buffer,1024,0);
@@ -85,5 +87,9 @@ void main()
         }
 
     }
+
     
 }
+// ps -e -o pid,comm,%cpu,%mem --sort=-%cpu | head -n 10
+//https://unix.stackexchange.com/questions/13968/show-top-five-cpu-consuming-processes-with-ps
+//https://stackoverflow.com/questions/1221555/retrieve-cpu-usage-and-memory-usage-of-a-single-process-on-linux
