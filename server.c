@@ -9,6 +9,21 @@
 #include<errno.h>
 #define  PORT 4455
 
+void send_file(FILE *fp, int sockfd){
+  int n;
+  char data[1024] = {0};
+
+  while(fgets(data, 1024, fp) != NULL) {
+    if (send(sockfd, data, sizeof(data), 0) == -1) {
+      perror("[-]Error in sending file.");
+      exit(1);
+    }
+    printf("Server sending: %s\n",data);
+    fflush(stdout);
+    bzero(data, 1024);
+  }
+}
+
 void main()
 {
     int socket_fd,ret;
@@ -78,10 +93,17 @@ void main()
                 }
                 printf("Client %d sent : %s\n",ntohs(new_address.sin_port),buffer);
                 system("ps -e -o pid,comm,%cpu,%mem --sort=-%cpu | head -n 10 >myfile");
-                
+
                 fflush(stdout);
-                strcpy(buffer,"Received your msg");
-                send(new_socket,buffer,1024,0);
+                // strcpy(buffer,"Received your msg");
+                // send(new_socket,buffer,1024,0);
+                FILE *fp = fopen("myfile", "r");
+                if (fp == NULL) 
+                {
+                    perror("[-]Error in reading file.");
+                    exit(1);
+                }
+                send_file(fp, new_socket);
                 bzero(buffer,1024);
             }
         }

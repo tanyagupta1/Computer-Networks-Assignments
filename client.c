@@ -8,6 +8,33 @@
 #include<arpa/inet.h>
 #include<errno.h>
 #define  PORT 4455
+
+void write_file(int sockfd,int count){
+  int n;
+  FILE *fp;
+  char *filename = "recv.txt";
+  char buffer[1024];
+
+  fp = fopen(filename, "w");
+  while (count>0) {
+    n = recv(sockfd, buffer, 1024, 0);
+    printf("Server sent: %s\n",buffer);
+    count--;
+    fflush(stdout);
+    if (n <= 0){
+      break;
+      return;
+    }
+    if(fprintf(fp, "%s", buffer)<0)
+    {
+        perror("Write error:");
+    }
+    // fflush(fp);
+    bzero(buffer, 1024);
+  }
+  fclose(fp);
+  return;
+}
 void main()
 {
     int client_socket,ret;
@@ -46,11 +73,14 @@ void main()
             close(client_socket);
             exit(EXIT_SUCCESS);
         }
-        if(recv(client_socket,buffer,1024,0)<0)
-        {
-            perror("Receive error:");
-        }
+        // if(recv(client_socket,buffer,1024,0)<0)
+        // {
+        //     perror("Receive error:");
+        // }
         
-        else printf("Server sent: %s\n",buffer);
+        // else printf("%s\n",buffer);
+        write_file(client_socket,10);
+        printf("I am back");
+        fflush(stdout);
     }
 }
