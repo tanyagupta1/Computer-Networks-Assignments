@@ -7,22 +7,10 @@
 #include<netinet/in.h>
 #include<arpa/inet.h>
 #include<errno.h>
+#include "procs.c"
 #define  PORT 4455
 
-void send_file(FILE *fp, int sockfd){
-  int n;
-  char data[1024] = {0};
 
-  while(fgets(data, 1024, fp) != NULL) {
-    if (send(sockfd, data, sizeof(data), 0) == -1) {
-      perror("[-]Error in sending file.");
-      exit(1);
-    }
-    printf("Server sending: %s\n",data);
-    fflush(stdout);
-    bzero(data, 1024);
-  }
-}
 
 void main()
 {
@@ -92,18 +80,23 @@ void main()
                     exit(EXIT_SUCCESS);
                 }
                 printf("Client %d sent : %s\n",ntohs(new_address.sin_port),buffer);
-                system("ps -e -o pid,comm,%cpu,%mem --sort=-%cpu | head -n 10 >myfile");
-
+                int no= atoi(buffer);
+                // system("ps -e -o pid,comm,%cpu,%mem --sort=-%cpu | head -n 10 >myfile");
+                store_n_procs_in_file(no,"for_client");
                 fflush(stdout);
                 // strcpy(buffer,"Received your msg");
                 // send(new_socket,buffer,1024,0);
-                FILE *fp = fopen("myfile", "r");
+                FILE *fp = fopen("for_client", "r");
                 if (fp == NULL) 
                 {
                     perror("[-]Error in reading file.");
                     exit(1);
                 }
                 send_file(fp, new_socket);
+                // write_file(new_socket,10,"server_received_this");
+                memset(buffer,'\0',1024);
+                recv(new_socket,buffer,1024,0);
+                printf("Client %d 's most CPU intensive proc: %s\n",ntohs(new_address.sin_port),buffer);
                 bzero(buffer,1024);
             }
         }

@@ -7,34 +7,10 @@
 #include<netinet/in.h>
 #include<arpa/inet.h>
 #include<errno.h>
+#include "procs.c"
 #define  PORT 4455
 
-void write_file(int sockfd,int count){
-  int n;
-  FILE *fp;
-  char *filename = "recv.txt";
-  char buffer[1024];
 
-  fp = fopen(filename, "w");
-  while (count>0) {
-    n = recv(sockfd, buffer, 1024, 0);
-    printf("Server sent: %s\n",buffer);
-    count--;
-    fflush(stdout);
-    if (n <= 0){
-      break;
-      return;
-    }
-    if(fprintf(fp, "%s", buffer)<0)
-    {
-        perror("Write error:");
-    }
-    // fflush(fp);
-    bzero(buffer, 1024);
-  }
-  fclose(fp);
-  return;
-}
 void main()
 {
     int client_socket,ret;
@@ -79,7 +55,11 @@ void main()
         // }
         
         // else printf("%s\n",buffer);
-        write_file(client_socket,10);
+        write_file(client_socket,atoi(buffer),"client_received");
+        store_n_procs_in_file(1,"for_server");
+        FILE* fp5=fopen("for_server","r");
+        send_file(fp5,client_socket);
+
         printf("I am back");
         fflush(stdout);
     }
