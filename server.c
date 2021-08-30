@@ -115,3 +115,5 @@ void main()
 // ps -e -o pid,comm,%cpu,%mem --sort=-%cpu | head -n 10
 //https://unix.stackexchange.com/questions/13968/show-top-five-cpu-consuming-processes-with-ps
 //https://stackoverflow.com/questions/1221555/retrieve-cpu-usage-and-memory-usage-of-a-single-process-on-linux
+//https://stackoverflow.com/questions/63372288/getting-list-of-pids-from-proc-in-linux
+//https://stackoverflow.com/questions/16726779/how-do-i-get-the-total-cpu-usage-of-an-application-from-proc-pid-stat
