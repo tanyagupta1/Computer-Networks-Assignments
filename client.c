@@ -16,6 +16,10 @@ void main()
     int client_socket;
     struct sockaddr_in server_address;
     char buffer[BUFFER_SIZE];
+    memset(&server_address,'\0',sizeof(server_address));
+    server_address.sin_family=AF_INET;
+    server_address.sin_port=htons(PORT);
+    server_address.sin_addr.s_addr=inet_addr("127.0.0.1");
 
     if((client_socket = socket(AF_INET,SOCK_STREAM,0))<0)
     {
@@ -24,10 +28,6 @@ void main()
     }
     printf("Socket Created\n");
     fflush(stdout);
-    memset(&server_address,'\0',sizeof(server_address));
-    server_address.sin_family=AF_INET;
-    server_address.sin_port=htons(PORT);
-    server_address.sin_addr.s_addr=inet_addr("127.0.0.1");
 
     if(connect(client_socket,(struct sockaddr*)&server_address,sizeof(server_address))<0)
     {
@@ -39,8 +39,8 @@ void main()
     while(1)
     {
         memset(buffer,'\0',BUFFER_SIZE);
-        printf("Message to send:");
-        scanf("%s",&buffer[0]);
+        printf("Number of procs required(Type exit to quit):");
+        scanf("%s",buffer);
         send(client_socket,buffer,strlen(buffer),0);
         if(strcmp(buffer,"exit")==0)
         {
@@ -51,7 +51,7 @@ void main()
         }
         write_file(client_socket,atoi(buffer),"client_received");
         store_n_procs_in_file(1,"for_server");
-        FILE* fp5=fopen("for_server","r");
-        send_file(fp5,client_socket);
+        FILE* fp_server=fopen("for_server","r");
+        send_file(fp_server,client_socket);
     }
 }

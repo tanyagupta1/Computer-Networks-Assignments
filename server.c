@@ -19,7 +19,7 @@ void main()
     int new_socket;
     struct sockaddr_in new_address;
     socklen_t address_size;
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
 
     pid_t child_pid;
 
@@ -70,9 +70,9 @@ void main()
 
             while(1)
             {
-                memset(buffer,'\0',1024);
-                recv(new_socket,buffer,1024,0);
-                if(strcmp(buffer,"exit")==0)
+                memset(buffer,'\0',BUFFER_SIZE);
+                recv(new_socket,buffer,BUFFER_SIZE,0);
+                if(strcmp(buffer,"q")==0)
                 {
                     printf("Disconnected from %d \n",ntohs(new_address.sin_port));
                     fflush(stdout);
@@ -85,7 +85,7 @@ void main()
                 store_n_procs_in_file(no,"for_client");
                 fflush(stdout);
                 // strcpy(buffer,"Received your msg");
-                // send(new_socket,buffer,1024,0);
+                // send(new_socket,buffer,BUFFER_SIZE,0);
                 FILE *fp = fopen("for_client", "r");
                 if (fp == NULL) 
                 {
@@ -94,10 +94,10 @@ void main()
                 }
                 send_file(fp, new_socket);
                 // write_file(new_socket,10,"server_received_this");
-                memset(buffer,'\0',1024);
-                recv(new_socket,buffer,1024,0);
+                memset(buffer,'\0',BUFFER_SIZE);
+                recv(new_socket,buffer,BUFFER_SIZE,0);
                 printf("Client %d 's most CPU intensive proc: %s\n",ntohs(new_address.sin_port),buffer);
-                bzero(buffer,1024);
+                bzero(buffer,BUFFER_SIZE);
             }
         }
 

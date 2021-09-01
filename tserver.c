@@ -10,7 +10,7 @@
 #include "procs.c"
 #include<pthread.h>
 #define  PORT 8000
-#define BUFFER_SIZE 5000
+
 struct socket_info
 {
     int socket_fd;
