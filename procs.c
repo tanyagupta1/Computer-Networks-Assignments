@@ -5,7 +5,8 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<string.h>
-// Helper function to check if a struct dirent from /proc is a PID folder.
+#define BUFFER_SIZE 5000
+
 int is_pid_folder(const struct dirent *entry) {
     const char *p;
 
@@ -19,16 +20,16 @@ int is_pid_folder(const struct dirent *entry) {
 struct process
 {
         int pid;
-        char path[1000];
+        char path[BUFFER_SIZE];
         unsigned long time;
 };
 int compare(const void *p1, const void *p2)
 {
-    const struct process *elem1 = p1;    
-    const struct process *elem2 = p2;
+    const struct process *proc1 = p1;    
+    const struct process *proc2 = p2;
 
-   if (elem1->time < elem2->time) return 1;
-   else if (elem1->time > elem2->time) return -1;
+   if (proc1->time < proc2->time) return 1;
+   else if (proc1->time > proc2->time) return -1;
    else return 0;
 }
 void store_n_procs_in_file(int n, char * filename)
@@ -43,7 +44,7 @@ void store_n_procs_in_file(int n, char * filename)
     int cur_proc=0;
     procdir = opendir("/proc");
     if (!procdir) {
-        perror("opendir failed");
+        perror("Opendir:");
         return 1;
     }
     while ((entry = readdir(procdir))) 
@@ -63,7 +64,6 @@ void store_n_procs_in_file(int n, char * filename)
         strcpy(process_list[cur_proc].path,path);
         process_list[cur_proc].pid=pid;
         process_list[cur_proc].time=total_time;
-        
         cur_proc++;
         fclose(fp);
     }
@@ -81,12 +81,11 @@ void store_n_procs_in_file(int n, char * filename)
 void write_file(int sockfd,int count,char *filename){
   int n;
   FILE *fp;
-   
-  char buffer[1024];
+  char buffer[BUFFER_SIZE];
 
   fp = fopen(filename, "w");
   while (count>0) {
-    n = recv(sockfd, buffer, 1024, 0);
+    n = recv(sockfd, buffer, BUFFER_SIZE, 0);
     printf("Received: %s",buffer);
     count--;
     fflush(stdout);
@@ -98,29 +97,21 @@ void write_file(int sockfd,int count,char *filename){
     {
         perror("Write error:");
     }
-    // fflush(fp);
-    bzero(buffer, 1024);
+    bzero(buffer, BUFFER_SIZE);
   }
   fclose(fp);
   return;
 }
 void send_file(FILE *fp, int sockfd){
-  int n;
-  char data[1024] = {0};
+  char data[BUFFER_SIZE] = {0};
 
-  while(fgets(data, 1024, fp) != NULL) {
+  while(fgets(data, BUFFER_SIZE, fp) != NULL) {
     if (send(sockfd, data, sizeof(data), 0) == -1) {
-      perror("[-]Error in sending file.");
-      exit(1);
+      perror("Send error");
+      exit(EXIT_FAILURE);
     }
     printf("Sending: %s",data);
     fflush(stdout);
-    bzero(data, 1024);
+    bzero(data, BUFFER_SIZE);
   }
 }
-// int main(void) 
-// {
-//     store_n_procs_in_file(10,"tanyafile");
-   
-//     return 0;
-// }

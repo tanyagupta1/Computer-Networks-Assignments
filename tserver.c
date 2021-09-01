@@ -9,8 +9,8 @@
 #include<errno.h>
 #include "procs.c"
 #include<pthread.h>
-#define  PORT 4455
-
+#define  PORT 8000
+#define BUFFER_SIZE 5000
 struct socket_info
 {
     int socket_fd;
@@ -18,14 +18,14 @@ struct socket_info
 };
 void * connection_hander(void * client)
 {
-    char buffer [1024];
+    char buffer [BUFFER_SIZE];
     struct socket_info * info = client;
     int new_socket =info->socket_fd; 
     int sin_port= info->port_no;
     while(1)
             {
-                memset(buffer,'\0',1024);
-                recv(new_socket,buffer,1024,0);
+                memset(buffer,'\0',BUFFER_SIZE);
+                recv(new_socket,buffer,BUFFER_SIZE,0);
                 if(strcmp(buffer,"exit")==0)
                 {
                     printf("Disconnected from %d \n",sin_port);
@@ -35,11 +35,8 @@ void * connection_hander(void * client)
                 }
                 printf("Client %d sent : %s\n",sin_port,buffer);
                 int no= atoi(buffer);
-                // system("ps -e -o pid,comm,%cpu,%mem --sort=-%cpu | head -n 10 >myfile");
                 store_n_procs_in_file(no,"for_client");
                 fflush(stdout);
-                // strcpy(buffer,"Received your msg");
-                // send(new_socket,buffer,1024,0);
                 FILE *fp = fopen("for_client", "r");
                 if (fp == NULL) 
                 {
@@ -47,11 +44,10 @@ void * connection_hander(void * client)
                     return EXIT_FAILURE;
                 }
                 send_file(fp, new_socket);
-                // write_file(new_socket,10,"server_received_this");
-                memset(buffer,'\0',1024);
-                recv(new_socket,buffer,1024,0);
+                memset(buffer,'\0',BUFFER_SIZE);
+                recv(new_socket,buffer,BUFFER_SIZE,0);
                 printf("Client %d 's most CPU intensive proc: %s\n",sin_port,buffer);
-                bzero(buffer,1024);
+                memset(buffer,'\0',BUFFER_SIZE);
             }
 }
 
@@ -62,9 +58,14 @@ void main()
     int new_socket;
     struct sockaddr_in new_address;
     socklen_t address_size;
-    char buffer[1024];
-
+    char buffer[BUFFER_SIZE];
     pid_t child_pid;
+
+    memset(&server_address,'\0',sizeof(server_address));
+    server_address.sin_family=AF_INET;
+    server_address.sin_port=htons(PORT);
+    server_address.sin_addr.s_addr=inet_addr("127.0.0.1");
+
 
     if((socket_fd = socket(AF_INET,SOCK_STREAM,0))<0)
     {
@@ -73,12 +74,7 @@ void main()
     }
     printf("Created server socket\n");
     fflush(stdout);
-    memset(&server_address,'\0',sizeof(server_address));
-
-    server_address.sin_family=AF_INET;
-    server_address.sin_port=htons(PORT);
-    server_address.sin_addr.s_addr=inet_addr("127.0.0.1");
-
+    
     if((ret=bind(socket_fd,(struct sockaddr*)&server_address,sizeof(server_address)))<0)
     {
         perror("Binding error:");
@@ -107,13 +103,12 @@ void main()
         }
         printf("Received connection from %s : %d\n",inet_ntoa(new_address.sin_addr),ntohs(new_address.sin_port));
         fflush(stdout);
-        
         pthread_t t;
         struct socket_info * info = malloc(sizeof(struct socket_info));
-        info->socket_fd=new_socket; info->port_no=ntohs(new_address.sin_port);
+        info->socket_fd=new_socket; 
+        info->port_no=ntohs(new_address.sin_port);
         pthread_create(&t,NULL,connection_hander,info);
 
     }
 
-    
 }

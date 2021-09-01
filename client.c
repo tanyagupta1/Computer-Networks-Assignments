@@ -8,14 +8,14 @@
 #include<arpa/inet.h>
 #include<errno.h>
 #include "procs.c"
-#define  PORT 4455
-
+#define  PORT 8000
+#define BUFFER_SIZE 5000
 
 void main()
 {
-    int client_socket,ret;
+    int client_socket;
     struct sockaddr_in server_address;
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
 
     if((client_socket = socket(AF_INET,SOCK_STREAM,0))<0)
     {
@@ -29,7 +29,7 @@ void main()
     server_address.sin_port=htons(PORT);
     server_address.sin_addr.s_addr=inet_addr("127.0.0.1");
 
-    if((ret = connect(client_socket,(struct sockaddr*)&server_address,sizeof(server_address)))<0)
+    if(connect(client_socket,(struct sockaddr*)&server_address,sizeof(server_address))<0)
     {
         perror("Connect:");
         exit(EXIT_FAILURE);
@@ -38,29 +38,20 @@ void main()
     fflush(stdout);
     while(1)
     {
-        memset(buffer,'\0',1024);
+        memset(buffer,'\0',BUFFER_SIZE);
         printf("Message to send:");
         scanf("%s",&buffer[0]);
         send(client_socket,buffer,strlen(buffer),0);
         if(strcmp(buffer,"exit")==0)
         {
-            printf("Adios!\n");
+            printf("Closing connection with server!\n");
             fflush(stdout);
             close(client_socket);
             exit(EXIT_SUCCESS);
         }
-        // if(recv(client_socket,buffer,1024,0)<0)
-        // {
-        //     perror("Receive error:");
-        // }
-        
-        // else printf("%s\n",buffer);
         write_file(client_socket,atoi(buffer),"client_received");
         store_n_procs_in_file(1,"for_server");
         FILE* fp5=fopen("for_server","r");
         send_file(fp5,client_socket);
-
-        printf("I am back");
-        fflush(stdout);
     }
 }
