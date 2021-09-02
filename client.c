@@ -36,8 +36,8 @@ void main()
     }
     printf("Connected Successfully\n");
     fflush(stdout);
-    while(1)
-    {
+    // while(1)
+    // {
         memset(buffer,'\0',BUFFER_SIZE);
         printf("Number of procs required(Type exit to quit):");
         scanf("%s",buffer);
@@ -53,5 +53,6 @@ void main()
         store_n_procs_in_file(1,"for_server");
         FILE* fp_server=fopen("for_server","r");
         send_file(fp_server,client_socket);
-    }
+        close(client_socket);
+    // }
 }

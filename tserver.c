@@ -22,8 +22,8 @@ void * connection_hander(void * client)
     struct socket_info * info = client;
     int new_socket =info->socket_fd; 
     int sin_port= info->port_no;
-    while(1)
-            {
+    // while(1)
+    //         {
                 memset(buffer,'\0',BUFFER_SIZE);
                 recv(new_socket,buffer,BUFFER_SIZE,0);
                 if(strcmp(buffer,"exit")==0)
@@ -48,7 +48,14 @@ void * connection_hander(void * client)
                 recv(new_socket,buffer,BUFFER_SIZE,0);
                 printf("Client %d 's most CPU intensive proc: %s\n",sin_port,buffer);
                 memset(buffer,'\0',BUFFER_SIZE);
-            }
+                printf("Waiting for port %d ...\n",sin_port);
+                fflush(stdout);
+                sleep(30);
+                printf("Wait over for %d.. exiting \n",sin_port);
+                fflush(stdout);
+                close(new_socket);
+            // }
+
 }
 
 void main()

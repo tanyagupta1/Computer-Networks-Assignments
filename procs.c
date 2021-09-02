@@ -12,7 +12,8 @@ struct process
         char path[BUFFER_SIZE];
         unsigned long time;
 };
-int is_pid_folder(const struct dirent *entry) {
+int is_pid_folder(const struct dirent *entry) 
+{
     const char *p;
 
     for (p = entry->d_name; *p; p++) 
@@ -36,7 +37,7 @@ void store_n_procs_in_file(int n, char * filename)
     DIR *procdir;
     FILE *fp;
     struct dirent *entry;
-    char path[256 + 5 + 5]; // d_name + /proc + /stat
+    char path[266];
     int pid;
     unsigned long utime, stime;
     struct process process_list[1000];

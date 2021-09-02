@@ -1,2 +1,4 @@
-PID: 39353 Name: (firefox) Time(clock-ticks): 2178817
-PID: 39425 Name: (Privileged Time(clock-ticks): 2178817
+PID: 39353 Name: (firefox) Time(clock-ticks): 4172184
+PID: 39425 Name: (Privileged Time(clock-ticks): 4172184
+PID: 75002 Name: (zoom) Time(clock-ticks): 1449932
+PID: 1532 Name: (gnome-shell) Time(clock-ticks): 1432111
