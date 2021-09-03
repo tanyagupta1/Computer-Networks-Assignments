@@ -1,0 +1,9 @@
+Run "make" to create client and server binaries
+"make clear_all" to clear everything except for source files
+
+File description:
+1. client received is the file received by client
+2. for_client_# is created by server to send to client
+3. server receives its proc and displays it onto the console
+
+Each client thread waits for 30 sec after sending the info to the server before closing 

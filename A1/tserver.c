@@ -35,12 +35,14 @@ void * connection_hander(void * client)
                 }
                 printf("Client %d sent : %s\n",sin_port,buffer);
                 int no= atoi(buffer);
-                store_n_procs_in_file(no,"for_client");
+                char for_client[500];
+                sprintf(for_client,"for_client_%d",sin_port);
+                store_n_procs_in_file(no,for_client);
                 fflush(stdout);
-                FILE *fp = fopen("for_client", "r");
+                FILE *fp = fopen(for_client, "r");
                 if (fp == NULL) 
                 {
-                    perror("[-]Error in reading file.");
+                    perror("Error in reading file.");
                     return EXIT_FAILURE;
                 }
                 send_file(fp, new_socket);
