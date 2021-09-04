@@ -5,6 +5,11 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<string.h>
+#include<sys/socket.h>
+#include<sys/types.h>
+#include<netinet/in.h>
+#include<arpa/inet.h>
+#include<errno.h>
 #include<fcntl.h>
 #define BUFFER_SIZE 5000
 struct process
@@ -61,6 +66,7 @@ void store_n_procs_in_file(int n, char * filename)
         }
         
         fp = fopen(path, "r");
+        //handle fp opening
         fscanf(fp, "%d %s %*c %*d %*d %*d %*d %*d %*u %*lu %*lu %*lu %*lu %lu %lu",&pid, &path,&utime,&stime);
         unsigned long total_time = utime+stime;
         strcpy(process_list[cur_proc].path,path);
@@ -80,45 +86,7 @@ void store_n_procs_in_file(int n, char * filename)
     fclose(n_procs);
 
 }
-void write_file(int sockfd,int count,char *filename)
+int main()
 {
-  
-  FILE *fp;
-  char buffer[BUFFER_SIZE];
-  fp = fopen(filename, "w");
-  while (count>0) 
-  {
-    if (recv(sockfd, buffer, BUFFER_SIZE, 0) <= 0)
-    {
-      fclose(fp);
-      return;
-    }
-    printf("Received: %s",buffer);
-    count--;
-    fflush(stdout);
-    if(fprintf(fp, "%s", buffer)<0)
-    {
-        perror("Write error:");
-    }
-    bzero(buffer, BUFFER_SIZE);
-  }
-  fclose(fp);
-  return;
-}
-void send_file(FILE *fp, int sockfd)
-{
-  char data[BUFFER_SIZE];
-  for(int i=0;i<BUFFER_SIZE;i++) data[i]='\0';
-
-  while(fgets(data, BUFFER_SIZE, fp) != NULL) 
-  {
-    if (send(sockfd, data, sizeof(data), 0) < 0) 
-    {
-      perror("Send error");
-      exit(EXIT_FAILURE);
-    }
-    printf("Sending: %s",data);
-    fflush(stdout);
-    bzero(data, BUFFER_SIZE);
-  }
+    store_n_procs_in_file(5,"open_sys");
 }
