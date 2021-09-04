@@ -64,7 +64,7 @@ void store_n_procs_in_file(int n, char * filename)
             perror("Open:");
             exit(EXIT_FAILURE);
         }
-        
+
         fp = fopen(path, "r");
         //handle fp opening
         fscanf(fp, "%d %s %*c %*d %*d %*d %*d %*d %*u %*lu %*lu %*lu %*lu %lu %lu",&pid, &path,&utime,&stime);
@@ -74,6 +74,7 @@ void store_n_procs_in_file(int n, char * filename)
         process_list[cur_proc].time=total_time;
         cur_proc++;
         fclose(fp);
+        close(fd1);
     }
 
     closedir(procdir);
