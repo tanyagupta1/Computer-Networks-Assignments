@@ -25,6 +25,18 @@ void routingAlgo(vector<RoutingNode*> nd)
   printRT(nd);
 
   // part b
+  for(auto &e: nd)
+  {
+    if(e->getName()=="B") e->modify_Rtable("10.0.1.3",16);
+    if(e->getName()=="C") e->modify_Rtable("10.0.1.23",16);
+  }
+  cout<<"tables after increasing B-C link cost"<<'\n';
+  printRT(nd);
+  cout<<"starting updates"<<'\n';
+  for(int i=0;i<no_nodes;i++)
+  {
+    nd[i]->sendMsg();
+  }
 
 }
 

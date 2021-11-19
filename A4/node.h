@@ -148,7 +148,14 @@ class Node {
     entry.cost = cost;
     mytbl.tbl.push_back(entry);
   }
-  
+  // for part b
+  void modify_Rtable(string dest_ip,int cost)
+  {
+    for(auto &e: mytbl.tbl)
+    {
+      if(e.dstip==dest_ip) e.cost = cost;
+    }
+  }
   string getName() {
     return this->name;
   }
