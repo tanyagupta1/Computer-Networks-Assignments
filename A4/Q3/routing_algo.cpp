@@ -125,7 +125,8 @@ void RoutingNode::recvMsg(RouteMsg *msg)
       }
     }
   }
-  // 
+  //
+  printTable();
   if(modified)
   {
     cout<<"table modified"<<'\n';
@@ -136,7 +137,7 @@ void RoutingNode::recvMsg(RouteMsg *msg)
   {
     cout<<"table not modified"<<'\n';
   }
-  printTable();
+  
   //your code here
 }
 
