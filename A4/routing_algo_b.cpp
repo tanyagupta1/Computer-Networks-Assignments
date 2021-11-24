@@ -38,6 +38,7 @@ void routingAlgo(vector<RoutingNode*> nd)
   {
     nd[i]->sendMsg();
   }
+  printRT(nd);
 
 }
 

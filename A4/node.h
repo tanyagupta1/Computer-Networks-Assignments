@@ -174,7 +174,7 @@ class Node {
     Comparator myobject;
     sort(mytbl.tbl.begin(),mytbl.tbl.end(),myobject);
     cout<<this->getName()<<":"<<endl;
-    cout<<"Destinat  | Next Hop |myip inter| hops"<<'\n';
+    // cout<<"Destinat  | Next Hop |myip inter| hops"<<'\n';
     for (int i = 0; i < mytbl.tbl.size(); ++i) {
       cout<<mytbl.tbl[i].dstip<<" | "<<mytbl.tbl[i].nexthop<<" | "<<mytbl.tbl[i].ip_interface<<" | "<<mytbl.tbl[i].cost <<endl;
     }
