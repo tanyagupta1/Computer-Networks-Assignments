@@ -38,6 +38,7 @@ void routingAlgo(vector<RoutingNode*> &nd)
   {
     nd[i]->sendMsg();
   }
+  cout<<"final tables after convergence"<<'\n';
   printRT(nd);
 
 }

@@ -38,6 +38,7 @@ void routingAlgo(vector<RoutingNode*> nd)
   {
     nd[i]->sendMsg();
   }
+  cout<<"Final tables after converging"<<'\n';
   printRT(nd);
 
 }
@@ -125,10 +126,10 @@ void RoutingNode::recvMsg(RouteMsg *msg)
       }
     }
   }
+  printTable();
   if(modified)
   {
     cout<<"table modified"<<'\n';
-    printTable();
     sendMsg();
   }
   else

@@ -21,7 +21,6 @@ class RoutingEntry
   /* You will have to add a new variable say, share_cost. 
   'share_cost' holds the cost that has to be shared with the neighbor.
   This change will be required to complete Q.3. of the assignment. */
-  int cost_to_share;
 };
 
 /*
@@ -138,8 +137,6 @@ class Node {
     entry.ip_interface = myip;
     entry.cost = cost;
     mytbl.tbl.push_back(entry);
-    
-  
   }
 
   //extra addition by me
@@ -155,14 +152,12 @@ class Node {
   // for part b
   void modify_Rtable(string dest_ip,int cost)
   {
-    this->link_changed = true;
-    for(auto &e: this->mytbl.tbl)
+    link_changed=true;
+    for(auto &e: mytbl.tbl)
     {
       if(e.dstip==dest_ip) e.cost = cost;
       if(e.nexthop==dest_ip) e.cost = cost;
     }
-    cout<<"after modifying"<<'\n';
-    printTable();
   }
   string getName() {
     return this->name;
@@ -190,31 +185,20 @@ class Node {
   
   void sendMsg()
   {
-    
-    
-    for (int i = 0; i < interfaces.size(); ++i) 
-    {
-      struct routingtbl ntbl;
+    struct routingtbl ntbl;
     for (int i = 0; i < mytbl.tbl.size(); ++i) 
     {
       ntbl.tbl.push_back(mytbl.tbl[i]);
     }
+    
+    for (int i = 0; i < interfaces.size(); ++i) 
+    {
       RouteMsg msg;
       msg.from = interfaces[i].first.getip();
       msg.mytbl = &ntbl;
-      msg.recvip = interfaces[i].first.getConnectedIp();	
+      msg.recvip = interfaces[i].first.getConnectedIp();
       if((msg.from == "10.0.1.3" && msg.recvip=="10.0.1.23" && this->link_changed) ||(msg.from=="10.0.1.23" && msg.recvip=="10.0.1.3" && this->link_changed))
-       continue;
-
-      //
-      for(auto &e: ntbl.tbl)
-      {
-        if(e.nexthop == msg.recvip)
-        {
-          e.cost = 16;
-        }
-      }
-      // cout<<"just before sending "<<this->getName()<<" "<<this->link_changed<<' '<<msg.from<<' '<<msg.recvip<<'\n';
+       continue;		
       interfaces[i].second->recvMsg(&msg);
     }
   }
