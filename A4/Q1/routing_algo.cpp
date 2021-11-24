@@ -22,6 +22,7 @@ void routingAlgo(vector<RoutingNode*> nd)
     nd[i]->sendMsg();
   }
   /*Print routing table entries after routing algo converges */
+  cout<<"tables after converging"<<'\n';
   printRT(nd);
 
  
@@ -34,7 +35,7 @@ void RoutingNode::recvMsg(RouteMsg *msg)
 
   string from_ip = msg->from;
   string to_ip = msg->recvip;
-  cout<<"processing msg from "<<from_ip<<" to "<<to_ip<<'\n';
+  // cout<<"processing msg from "<<from_ip<<" to "<<to_ip<<'\n';
   vector<RoutingEntry> received_table = msg->mytbl->tbl;
   bool modified = false;
   int rcvd_size = received_table.size();
@@ -106,13 +107,13 @@ void RoutingNode::recvMsg(RouteMsg *msg)
   }
   if(modified)
   {
-    cout<<"table modified"<<'\n';
-    printTable();
+    // cout<<"table modified"<<'\n';
+    // printTable();
     sendMsg();
   }
   else
   {
-    cout<<"table not modified"<<'\n';
+    // cout<<"table not modified"<<'\n';
   }
   
   //your code here
